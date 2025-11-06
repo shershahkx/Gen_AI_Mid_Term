@@ -10,47 +10,37 @@ app.use(bodyParser.json());
 
 const apiKey = process.env.GEMINI_API_KEY;
 if (!apiKey) {
-  console.error("❌ Error: GEMINI_API_KEY not found. Please create a .env file.");
+  console.error("Error: GEMINI_API_KEY not found. Please create a .env file.");
   process.exit(1);
 }
 
 const genAI = new GoogleGenerativeAI(apiKey);
 
-// 🧠 Prompt for reviewing code
 const prompt = `
-You are an AI Code Reviewer.
+You are an AI Code Reviewer. Review the given code snippet and provide concise feedback under these three categories:
 
-Review the provided code with a focus on clarity, correctness, and efficiency. 
-Provide helpful, concise, and actionable feedback that would genuinely improve the code quality.
+1. **Readability** – Comment briefly on naming, formatting, and comment clarity.
+2. **Best Practices** – Point out key issues such as unsafe access, hard-coded values, or missing encapsulation.
+3. **Optimization** – Suggest small improvements for performance or simplicity.
 
-Your feedback should cover:
-- **Readability:** clarity of variable names, structure, and comments.
-- **Best Practices:** maintainability, reliability, and code hygiene.
-- **Performance:** any avoidable inefficiencies or redundant logic.
+Each section should include only the most relevant 1–3 points. Keep it short and clear — no long explanations or repetition.
 
-Respond in a professional, developer-friendly tone using the following structure:
+Return your answer in this format:
 
 ### Readability
-Comment on how clear and understandable the code is. 
-Point out any confusing variable names, missing comments, or formatting inconsistencies. 
-Suggest specific improvements to make the code easier to follow.
+- Issue: ...
+- Suggestion: ...
 
 ### Best Practices
-Evaluate whether the code follows general coding standards and safe practices. 
-Identify any hardcoded values, missing validations, or unreliable patterns. 
-Recommend improvements that enhance maintainability and robustness.
+- Issue: ...
+- Suggestion: ...
 
-### Performance
-Analyze the efficiency of the code. 
-Highlight any redundant operations, heavy loops, or unnecessary computations. 
-Suggest optimizations that would make the code cleaner and faster.
+### Optimization
+- Issue: ...
+- Suggestion: ...
 
-Finish with a short summary of the overall impression, e.g., 
-"Overall, the code is clean and functional but could benefit from clearer variable naming and reduced repetition."
 `;
 
-
-// 🧩 API route to handle review requests
 app.post("/review", async (req, res) => {
   try {
     const userCode = req.body.code || "";
@@ -94,4 +84,4 @@ app.post("/review", async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`✅ Server running on http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
